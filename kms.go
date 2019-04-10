@@ -14,7 +14,7 @@ type service struct {
 	kms *kms.KeyManagementClient
 }
 
-func NewClient(ctx context.Context) (*service, error) {
+func NewService(ctx context.Context) (*service, error) {
 	k, err := kms.NewKeyManagementClient(ctx)
 	if err != nil {
 		return nil, err
