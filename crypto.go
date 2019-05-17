@@ -15,6 +15,18 @@ type Crypto interface {
 	Decrypt(ctx context.Context, key, cipherText string) (string, error)
 }
 
+type Key struct {
+	ProjectID  string
+	LocationID string
+	KeyRingID  string
+	KeyID      string
+}
+
+// example keyName: "projects/PROJECT_ID/locations/global/keyRings/RING_ID/cryptoKeys/KEY_ID"
+func (k *Key) Name() string {
+	return fmt.Sprintf("projects/%s/locations/%s/keyRings/%s/cryptoKeys/%s", k.ProjectID, k.LocationID, k.KeyRingID, k.KeyID)
+}
+
 type crypto struct {
 	kms *kms.KeyManagementClient
 }
@@ -54,9 +66,4 @@ func (c *crypto) Decrypt(ctx context.Context, key, cipherText string) (string, e
 		return "", errors.Wrapf(err, "kms: failed to decrypt. CipherText=%c", string(cipherText))
 	}
 	return string(resp.Plaintext), nil
-}
-
-// example keyName: "projects/PROJECT_ID/locations/global/keyRings/RING_ID/cryptoKeys/KEY_ID"
-func Key(projectID, keyRingID, keyID string) string {
-	return fmt.Sprintf("projects/%s/locations/global/keyRings/%s/cryptoKeys/%s", projectID, keyRingID, keyID)
 }
